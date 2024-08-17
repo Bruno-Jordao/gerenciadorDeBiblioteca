@@ -1,6 +1,7 @@
 package Model.DAO;
 
 import Interfaces.Bibliotecario;
+import Interfaces.Observer;
 import Model.DTO.BibliotecarioDTO;
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,13 +9,33 @@ import java.util.List;
 import Model.DTO.LivroDTO;
 import Model.DTO.AluguelDTO;
 import Model.DTO.RelatorioDTO;
+import Interfaces.Subject;
 
-public class BibliotecarioDAO implements Bibliotecario {
+public class BibliotecarioDAO implements Bibliotecario, Subject {
 
     private Connection connection;
 
     public BibliotecarioDAO(Connection connection) {
         this.connection = connection;
+    }
+
+    private List<Observer> observers = new ArrayList<>();
+
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(String mensagem) {
+        for (Observer observer : observers) {
+            observer.update(mensagem);
+        }
     }
 
     @Override
@@ -120,6 +141,7 @@ public class BibliotecarioDAO implements Bibliotecario {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        notifyObservers("Aluguel registrado: " + aluguel.getLivroId());
     }
 
     @Override
@@ -142,6 +164,7 @@ public class BibliotecarioDAO implements Bibliotecario {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        notifyObservers("Livro devolvido: " + aluguelId);
     }
 
     @Override
