@@ -1,4 +1,4 @@
-package DTO;
+package Model.DTO;
 
 public class EstoqueDTO {
 

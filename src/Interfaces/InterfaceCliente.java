@@ -1,7 +1,7 @@
 package Interfaces;
 
 
-import DTO.ClienteDTO;
+import Model.DTO.ClienteDTO;
 import java.sql.SQLException;
 
 public interface InterfaceCliente {

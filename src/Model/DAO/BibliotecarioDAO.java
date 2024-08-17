@@ -1,5 +1,6 @@
 package Model.DAO;
 
+import Interfaces.Bibliotecario;
 import Model.DTO.BibliotecarioDTO;
 import java.sql.*;
 import java.util.ArrayList;
@@ -122,6 +123,28 @@ public class BibliotecarioDAO implements Bibliotecario {
     }
 
     @Override
+    public void devolverLivroAlugado(long aluguelId) {
+        String sqlDevolucao = "UPDATE alugueis SET data_devolucao_real = ? WHERE id = ?";
+        String sqlAtualizarEstoque = "UPDATE livros SET quantidade = quantidade + 1 WHERE id = (SELECT livro_id FROM alugueis WHERE id = ?)";
+
+        try (PreparedStatement stmtDevolucao = connection.prepareStatement(sqlDevolucao);
+             PreparedStatement stmtAtualizarEstoque = connection.prepareStatement(sqlAtualizarEstoque)) {
+
+            // Atualizar a data de devolução real
+            stmtDevolucao.setDate(1, Date.valueOf(java.time.LocalDate.now()));
+            stmtDevolucao.setLong(2, aluguelId);
+            stmtDevolucao.executeUpdate();
+
+            // Atualizar o estoque do livro
+            stmtAtualizarEstoque.setLong(1, aluguelId);
+            stmtAtualizarEstoque.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void adicionarEstoque(LivroDTO livro, int quantidade) {
         String sql = "UPDATE livros SET quantidade = quantidade + ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -135,15 +158,21 @@ public class BibliotecarioDAO implements Bibliotecario {
 
     @Override
     public void removerEstoque(LivroDTO livro, int quantidade) {
-        String sql = "UPDATE livros SET quantidade = quantidade - ? WHERE id = ?";
+        String sql = "UPDATE livros SET quantidade = quantidade - ? WHERE id = ? AND quantidade >= ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, quantidade);
             stmt.setLong(2, livro.getId());
-            stmt.executeUpdate();
+            stmt.setInt(3, quantidade);
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected == 0) {
+                System.out.println("Erro: Estoque insuficiente para remover a quantidade solicitada.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public int consultarEstoque(LivroDTO livro) {

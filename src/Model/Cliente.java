@@ -1,7 +1,7 @@
 package Model;
 
-import DAO.ClienteDAO;
-import DTO.ClienteDTO;
+import Model.DAO.ClienteDAO;
+import Model.DTO.ClienteDTO;
 import java.sql.SQLException;
 
 public abstract class Cliente {

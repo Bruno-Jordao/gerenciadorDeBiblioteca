@@ -1,8 +1,8 @@
-package DAO;
+package Model.DAO;
 
 
 import ConnectionFactory.ConexaoPostgres;
-import DTO.ClienteDTO;
+import Model.DTO.ClienteDTO;
 import Interfaces.InterfaceCliente;
 
 import java.sql.Connection;

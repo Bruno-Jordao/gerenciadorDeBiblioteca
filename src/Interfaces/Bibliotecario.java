@@ -1,4 +1,4 @@
-package Model.DAO;
+package Interfaces;
 
 import Model.DTO.AluguelDTO;
 import Model.DTO.BibliotecarioDTO;
@@ -29,7 +29,7 @@ public interface Bibliotecario {
     void removerEstoque(LivroDTO livro, int quantidade);
     int consultarEstoque(LivroDTO livro);
     void registrarVenda(LivroDTO livro, int quantidade);
-
+    void devolverLivroAlugado(long aluguelId);
 
     List<AluguelDTO> consultarAlugueisPendentes();
     List<RelatorioDTO> gerarRelatoriosVendas(); // Supondo que você tenha um DTO para relatórios de vendas
