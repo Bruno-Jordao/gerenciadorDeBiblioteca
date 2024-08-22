@@ -1,5 +1,12 @@
 package Model;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import Model.DTO.ClienteDTO;
+
+
 public class Venda {
 
   private int idVenda;
